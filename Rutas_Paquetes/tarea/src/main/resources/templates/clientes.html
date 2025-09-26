@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Clientes - Sistema de Rutas</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="mb-4">Gestión de Clientes</h1>
+
+    <!-- Formulario para agregar/editar cliente -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 th:if="${cliente.id == null}">Agregar Nuevo Cliente</h5>
+            <h5 th:if="${cliente.id != null}">Editar Cliente</h5>
+        </div>
+        <div class="card-body">
+            <form th:action="${cliente.id == null} ? @{/web/clientes/guardar} : @{/web/clientes/guardar}" th:object="${cliente}" method="post">
+                <!-- Campo oculto para el ID en modo edición -->
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" id="telefono" th:field="*{telefono}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <input type="text" class="form-control" id="direccion" th:field="*{direccion}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="correo" class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="correo" th:field="*{correo}">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Guardar Cliente</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lista de clientes -->
+    <div class="card">
+        <div class="card-header">
+            <h5>Lista de Clientes</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="cli : ${clientes}">
+                        <td th:text="${cli.id}"></td>
+                        <td th:text="${cli.nombre}"></td>
+                        <td th:text="${cli.direccion}"></td>
+                        <td th:text="${cli.telefono}"></td>
+                        <td th:text="${cli.correo}"></td>
+                        <td>
+                            <a th:href="@{/web/clientes/editar/{id}(id=${cli.id})}"
+                               class="btn btn-sm btn-primary">Editar</a>
+                            <a th:href="@{/web/clientes/eliminar/{id}(id=${cli.id})}"
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('¿Estás seguro de eliminar este cliente?')">Eliminar</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

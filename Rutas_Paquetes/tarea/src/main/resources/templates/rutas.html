@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Gestión de Rutas</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="mb-4">Gestión de Rutas</h1>
+
+    <!-- Formulario para agregar/editar ruta -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 th:if="${ruta.id == null}">Agregar Nueva Ruta</h5>
+            <h5 th:if="${ruta.id != null}">Editar Ruta</h5>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/web/rutas/guardar}" th:object="${ruta}" method="post">
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="repartidor" class="form-label">Repartidor</label>
+                        <select class="form-control" id="repartidor" th:field="*{repartidor}" required>
+                            <option value="">Seleccione un repartidor...</option>
+                            <option th:each="rep : ${repartidores}" 
+                                    th:value="${rep.id}" 
+                                    th:text="${rep.nombre}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="fecha" class="form-label">Fecha de la Ruta</label>
+                        <input type="date" class="form-control" id="fecha" th:field="*{fecha}" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="estado" class="form-label">Estado</label>
+                        <input type="text" class="form-control" id="estado" th:field="*{estado}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="kmEstimados" class="form-label">KM Estimados</label>
+                        <input type="text" class="form-control" id="kmEstimados" th:field="*{kmEstimados}">
+                    </div>
+                </div>
+
+                <!-- Aquí podrías agregar la selección de paquetes en el futuro -->
+                <!-- Por ejemplo, con un listado de checkboxes o un selector múltiple -->
+
+                <button type="submit" class="btn btn-primary mt-3">Guardar Ruta</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lista de rutas -->
+    <div class="card">
+        <div class="card-header">
+            <h5>Lista de Rutas</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Repartidor</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>KM Estimados</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="r : ${rutas}">
+                        <td th:text="${r.id}"></td>
+                        <td th:text="${r.repartidor != null} ? ${r.repartidor.nombre} : 'N/A'"></td>
+                        <td th:text="${#dates.format(r.fecha, 'dd-MM-yyyy')}"></td>
+                        <td th:text="${r.estado}"></td>
+                        <td th:text="${r.kmEstimados}"></td>
+                        <td>
+                            <a th:href="@{/web/rutas/editar/{id}(id=${r.id})}" class="btn btn-sm btn-primary">Editar</a>
+                            <a th:href="@{/web/rutas/eliminar/{id}(id=${r.id})}" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar esta ruta?')">Eliminar</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
